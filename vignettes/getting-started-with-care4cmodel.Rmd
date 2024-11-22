@@ -1,0 +1,475 @@
+---
+title: "Getting Started With care4cmodel"
+output: rmarkdown::html_vignette
+bibliography: refs_vignette.bib
+vignette: >
+  %\VignetteIndexEntry{Getting Started With care4cmodel}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7.15,
+  fig.height = 4.5
+)
+
+set.seed(12) # Initialize random generator for constant output 
+```
+
+This vignette's purpose is to serve as a guide for getting quickly started with
+the R package *care4cmodel*. While we give a short introduction the concept of
+the package below, we assume that you already know why you want to use the 
+package, and that you are not completely unfamiliar with the idea behind it.
+Here, we will only provide scientific details if they are necessary for 
+understanding how to work with the package. For a complete and detailed 
+scientific presentation see 
+[@biber_et_al_2024](https://doi.org/10.1016/j.compag.2024.109091).
+
+
+## 1 Concept of the package
+
+The R package *care4cmodel* has been designed in the context of quantifying 
+carbon flows related to the growth and management of forests. It is, in essence,
+a dynamic simulation model that is surrounded with tools to enable users to 
+quickly set up and simulate scenarios and evaluate them. The current version is 
+made for evaluating silvicultural concepts with a focus on opposing the CO~2~ 
+uptake from wood growth to the CO~2~ emissions caused by forest operations. 
+
+The basic idea of the model is that a forest area managed under a
+given concept can be adequately represented by a set of forest development
+stages, each of which covers a certain share of the total area. These area 
+shares change dynamically over time due to continuous forest dynamics, but they 
+can also change abruptly due to hazard events. Any further simulation results 
+are basically obtained by upscaling phase-wise information to these areas. Note,
+that *care4cmodel* is not a growth and yield simulator in the usual sense, i.e. 
+the required basic growth and yield information relating to the concept of 
+interest must be provided by the user (see 
+[Section 3.1](#section_concept_definition)). While the current implementation is
+constrained to providing the carbon related information as mentioned above, the 
+concept of the model is generic and lends itself to a broad variety of 
+applications.
+
+
+## 2 Quickstart {#quickstart}
+
+If you simply want to run and evaluate a simulation without further reading,
+here's your code:
+
+```{r quickstart, message = FALSE}
+library(care4cmodel) # Attach the package
+
+# Run a simulation and store its base results in a variable sim_base_out
+# call ?simulate_single_concept for details
+sim_base_out <- simulate_single_concept(
+    concept_def = pine_thinning_from_above_1, # use pre-defined concept
+    init_areas  = c(800, 0, 0, 0, 0, 200),
+    time_span   = 200,
+    risk_level  = 3
+)
+
+# Evaluate the base results for carbon related information
+# call ?fuel_and_co2_evaluation for details
+carbon_out <- fuel_and_co2_evaluation(sim_base_out, road_density_m_ha = 35)
+```
+
+Both result variables, `sim_base_out`, and `carbon_out` contain large objects
+which are, in essence, named lists. You can easily explore them manually, but
+there exist convenient functions for visualization:
+
+```{r quickstart_plot_base}
+# Plot base results. Without further specifications, this will generate a plot
+# of the areas covered by the stand development phases over time
+
+# Check the documentation with ?plot.c4c_base_result in order to see all 
+# options for plotting, especially growth and yield variables
+plot(sim_base_out) 
+
+```
+
+
+```{r quickstart_plot_carbon}
+# Plot carbon related results. The selected option for plot_type generates a
+# phase diagram where the total CO2 emissions due to forest operations are
+# plotted over the CO2 sequestered by wood growth.
+
+# Check the documentation with ?plot.c4c_co2_result in order to see all options
+# for plotting
+plot(carbon_out, plot_type = "em_vs_inc")
+
+```
+
+Great, if this got you sufficiently started. If you want more explanations, read
+on.
+
+
+## 3 Using care4cmodel
+
+After installing the package on your computer, the easiest (and standard) way 
+to access the functionality of the package is to attach it with
+```{r setup}
+library(care4cmodel)
+```
+
+### 3.1 Silvicultural concept definition {#section_concept_definition}
+
+The fundamental requirement for running simulations with *care4cmodel* is an 
+appropriate definition of the silvicultural concept of interest. Such 
+definitions are objects of class *c4c_concept*, and the most convienent way to
+generate one of your own is to use the function `c4c_concept()`. The main 
+argument to that function is a data frame with growth and yield information, as
+defined below. Many users will find it convenient to assemble this information
+in a spreadsheet software like MS EXCEL, and import it into R as a data frame.
+With `?c4c_concept` you can call the documentation of `c4c_concept()`. Using 
+this function includes a series of automatic checks in order to ensure that the 
+definition is technically correct. The package contains two pre-defined concept 
+definitions, `pine_thinning_from_above_1`, and, 
+`pine_no_thinning_and_clearcut_1`. We use the former for explaining the main 
+content of such a definition. Simply type the name of the concept to display its
+contents:
+
+```{r example_concept}
+pine_thinning_from_above_1
+```
+
+Basically, such an object of class `c4c_concept` (as created with the function 
+of the same name) is a list with three elements. The first
+element, `concept_name` is to be defined by the user. The second element, 
+`units` lists the most important units to be used when simulating this concept.
+This feature is not actively used in the current version (and is not required
+to be defined by the user), i.e. all numbers connected to any silvicultural 
+concept are understood in these units if not explicitly stated otherwise.
+However in future versions, it is planned to be more flexible in that regard. 
+The third element, `growth_and_yield` is actually the most important. It is a 
+data frame that defines the stand development phases to be considered, their 
+duration, and a set of fundamental growth and yield variables. Typically this 
+information comes from observational plots, silvicultural guidelines, forest 
+growth simulators, yield tables, and similar sources, or a mixture of these.
+
+The number of stand development phases is totally up to the user; for most 
+applications, however, four to seven phases should be sufficient. Each line of
+the data frame completely defines one such phase. The phases are taken to be 
+subsequent to each other in the order of the column `phase_no`. The last phase 
+is followed by the first phase again, which typically means a final harvest 
+followed by an initial stand. The columns of the data frame are defined as 
+follows (note that, depending on your system, the contents of some columns, and
+some columns themselves might be cut off in the display above):
+
++ **phase_no** Integer numbers that indicate the sequence of how the stand 
+development phases follow after each other
++ **phase_name** User-defined names for the stand development phases, must be
+unique
++ **duration** The (average) duration of each phase in years
++ **n_subphases** Integer numbers >= 1, indicating the number of subphases to 
+each phase to be considered internally. This is useful and required for 
+adjusting the "blur" when forest areas move through a sequence of phases. I.e.
+when a stand development phase has a duration of $D$ years, and $n$ subphases,
+a unit area will remain on average $D$ years in that phase, but with a variance 
+of $\sigma^2=\frac{D^2}{n}$. In many cases, the rule of thumb to have at least 
+three subphases and otherwise $\frac{D}{n}\approx 5$, will be adequate.
++ **vol_standing** The average standing wood volume (m³/ha) of a stand in the
+phase of interest
++ **vol_remove** The wood volume (m³/ha/a) that is regularly removed (harvested)
+per year and hectare from a stand in the phase of interest. This does not 
+include wood that is harvested due (partial) stand destruction by hazard events
++ **vol_mort** The wood volume (m³/ha/a) that is regularly dying per year and
+hectare in the phase of interest. Like vol_remove, this does not include 
+mortality due to stand destruction by hazard events
++ **n_standing** The average number of standing live trees per hectare in a 
+stand of the given phase
++ **n_remove** The number of trees that are removed per hectare and year due to
+regular harvest in the phase of interest
++ **dbh_standing** The average mean diameter at breast height, dbh (cm), of a 
+stand in the phase of interest
++ **dbh_remove** The average mean dbh (cm) of the trees being regularly 
+harvested in a stand of the given phase
++ **harvest_interval** While vol_remove, and n_remove are annual numbers, the
+harvest interval is the actual time between two harvest operations in the phase
+of interest
++ **survival_cum** Probability (i.e. number between 0 and 1) of a stand to 
+survive all occuring hazard events *since the beginning of the first phase* to 
+the end of the phase of interest. Therefore, the sequence of these numbers must 
+be decreasing along the sequence of phases. The sequence of probabilities given
+in the concept definition is considered the baseline risk. We demonstrate below
+how that baseline can be conveniently adjusted for covering other risk scenarios
++ **vol_increment** The average annual wood volume incrment (m³/ha/a) in the
+phase of interest. Unlike the previous variables, vol_increment is not required
+to be provided by the user when generating a concept definition with 
+`c4c_concept()`. It results directly from the phase durations, the standing
+volumes, the removal, and the mortality volume
+
+
+### 3.2 Running a simulation {#section_running_simulation}
+
+The workhorse function for conducting simulation runs with *care4cmodel* is
+`simulate_single_concept()`. For simulating an example with the concept 
+`pine_thinning_from_above_1` we use it as follows:
+
+```{r base_simulation}
+sim_base_out <- simulate_single_concept(
+    concept_def = pine_thinning_from_above_1,
+    init_areas  = c(1000, 0, 0, 0, 0, 0),
+    time_span   = 200,
+    risk_level  = 3
+)
+```
+
+The first argument `concept_def` is the definition of the silvicultural 
+concept to be used, it must be a valid object of class `c4c_concept` 
+([Section 3.1](#section_concept_definition)). The second argument, `init_areas`,
+is a vector that sets the initial areas covered by the stand development phases 
+as defined in the silvicultural concept (in ascending order). In the example,
+`init_areas` indicates 1000 ha in the first stand development phase, and no 
+areas covered by any other phase. This can be seen as an afforestation of a
+1000 ha forest area. During the simulation, the total area (1000 ha in our
+example) will remain constant, while the shares of the phases will be changing.
+The size of the areas and their initial distribution is fully up to the user.
+Note that the initial areas can also be specified on the level of the internal
+sub-phases ([Section 3.1](#section_concept_definition)). Call the function's 
+documentation with `?simulate_single_concept` for this and other details.
+The argument `time_span` is the number of years to cover with the simulation.
+200 years, as defined here, is certainly longer than required for typical 
+applications. With the argument `risk_level`, you can adjust the occurence of 
+stochastic hazard events relative to the baseline risk settings made in 
+`survival_cum` in the concept definition 
+([Section 3.1](#section_concept_definition)). In the example, the setting 
+`risk_level = 3` means that the actual damage probabilities are the same as if 
+the events leading to the baseline risk would happen three times in sequence.
+Consequently, `risk_level = 1` would use exactly the baseline risk; numbers 
+smaller than 1 would indicate a lower risk, e.g. `risk_level = 1/2` uses 
+damage probabilities as if only half of the baseline risk events happened. 
+Setting `risk_level = 0` will simulate the development without any stochastic
+hazard events. In our example, we store the output in a variable, we call
+`sim_base_out`. Internally, the simulation is based on functionality provided by
+the R package 
+[deSolve](https://CRAN.R-project.org/package=deSolve) 
+[@Soetart_et_al_2010].
+
+
+### 3.3 Exploring the base simulation output {#explore_base_sim_out}
+
+As its output, a simulation with `simulate_single_concept()` generates an 
+object of class `c4c_base_result`. This large object comprises different
+categories of information, and it has an own `plot()` function for convenient 
+result visualization as we will show below. In essence, such an object is a 
+named list containing several vectors, matrices, and data frames. In the example
+above ([Section 3.2](#section_running_simulation)), we stored such an output 
+object in the variable `sim_base_out`. For the sake of clarity, we do not 
+display the entire object here. In order to get an overview, let us first 
+display the names of the top level list elements:
+
+```{r show_base_output}
+names(sim_base_out)
+```
+
+The first six list elements, `concept`, `time_span`, `detailed_init`, 
+`detailed_out`, `init_areas`, and `risk_level` document the settings of  
+`simulate_single_concept()` that were used for the simulation. You can access 
+them most conveniently by their name, e.g.
+
+```{r base_access_init_areas}
+sim_base_out$init_areas
+```
+
+The list element `parameters` contains interal simulation parameters derived 
+from the user settings; most important sub-phase wise dwell times and detailed 
+risk related information.
+
+The two remaining list items `sim_areas`, and `sim_growth_and_yield` contain 
+actual simulation output. Both are named lists themselves. `sim_areas` contains
+three matrices named as follows:
+
+```{r names_sim_areas}
+names(sim_base_out$sim_areas)
+
+```
+
+All three matrices have the same structure; each line represents a point in
+time, i.e. the end of a simulation year. The first column denotes these times
+in years. The other columns represent the subsequent stand development phases
+from left to right. The matrix `areas` simply contains each phase's area in ha
+at the end of the respective simulation year. The matrix `area_inflows_regular`
+represents the areas in ha that flowed into a phase from the previous phase
+during the respective simulation year. Analogously, the matrix 
+`area_outflows_events` contains the areas that flowed out of a given phase into
+the (first subphase of the) initial phase due to hazard events. As both of the
+latter matrices represent flows during a year, they contain NA values for the
+initial situation, i.e. time 0.
+
+```{r area_matrices}
+head(sim_base_out$sim_areas$areas)
+head(sim_base_out$sim_areas$area_inflows_regular)
+head(sim_base_out$sim_areas$area_outflows_events)
+```
+
+The other remaining list element `sim_growth_and_yield` is a named list of data
+frames that contain growth and yield information which was, in essence, obtained
+by upscaling the growth and yield information provided in the silvicultural 
+concept definition ([Section 3.1](#section_concept_definition)). We obtain an
+overview with:
+
+```{r sim_growth_and_yield}
+sim_base_out$sim_growth_and_yield
+```
+
+As these data frames are mostly self explaining, let us just point out a few
+details. If not stated otherwise all numbers given there represent cubic meters
+wood. In the first data frame `gyield_summary`, the column `vol_rmv_cont` stands
+for wood volume that is continually removed (harvested) as planned according
+to the concept definition ([Section 3.1](#section_concept_definition)). 
+`vol_rmv_damage` in contrast, is all wood volume of the stands that were lost
+due to hazard events, assuming that this wood is harvested in its entirety. 
+Consequently, `vol_rmv_total` is the sum of both, regular and damage-induced
+harvest. Note that there are two variables related to volume increment, 
+`vol_inc_ups`, and `vol_inc`. The former is upscaled from the concept 
+definition, and this the volume increment which should be solely used for 
+subsequent calculations. The latter results from a differently defined post-hoc 
+calculation and is provided for internal reasons only. The data frames that make
+up the sub-list `gyield_phases` give a more detailed view on the variables 
+provided with `gyield_summary`, i.e. they split them among the stand development 
+phases.
+
+The last data frame, `gyield_harvest_detail` is of special importance, as it 
+contains detailed growth and yield information that is required for calculating 
+fuel consumption and CO~2~ emissions due to harvest operations. That is, the 
+average dbh of a tree to be harvested, `dbh_cm`, the average tree volume, 
+`vol_tree_m3`, the average neighbor distance of the harvest trees, 
+`tree_dist_m`, and the volume to be harvested, `volume`. Note that `volume` can
+be 0 even though there are non-zero values for the other variables.
+
+As mentioned in the [quickstart section](#quickstart), there is an own plot 
+function for the output objects of the function `simulate_single_concept()`. Its
+documentation is accessible by calling `?plot.c4c_base_result`. The plot shown
+in the quickstart section shows the default, the development of the areas
+covered by the different stand development phases over time. Due to the CRAN
+policies we can only provide very few other example plots; the reader is 
+encouraged to try out all options listed in the documentation. First, we 
+visualize the standing volume:
+
+```{r plot_standing_volume}
+plot(sim_base_out, variable = "vol_standing") # standing volume
+
+```
+
+Second, we plot the total harvested volume. The sharp peaks result from wood 
+that is removed due to hazard events.
+
+```{r plot_vol_rmv_total}
+plot(sim_base_out, variable = "vol_rmv_total") # total harvested volume
+
+```
+
+
+
+### 3.4 Calculating carbon related results
+
+In order to obtain the fuel consumption, and subsequently the CO~2~ emissions
+caused by forest operations, the package provides the function 
+`fuel_and_co2_evaluation`. The forest operations taken into account comprise
+cutting, moving the timber to the forest road (forwarding, skidding), and 
+maintenance of the forest road network. A typical call of 
+`fuel_and_co2_evaluation` in the context of our example is shown below. Note 
+that in contrast to the [quickstart section](#quickstart), we explicitly call 
+parameters with default values for demonstration.
+
+```{r fuel_and_co2, message = FALSE}
+# Calculate information about fuel consumption
+# call documentation with ?fuel_and_co2_evaluation for detail information
+carbon_out <- fuel_and_co2_evaluation(
+  sim_base_out,             # object obtained from simulate_single_concept
+  road_density_m_ha = 35,   # forest road density
+  raw_density_kg_m3 = 520,  # default setting, wood density
+  harvest_loss      = 0.1,  # default, share of volume lost at harvest
+  bark_share        = 0.12, # default, bark share of volume
+  mode  = "standard" # default, choice is between "standard" and "nordic"
+)
+```
+
+The only parameters, the user must provide in any case, are an object of class
+`c4c_base_result` as obtained from `simulate_single_concept()` and the forest 
+road density (m/ha) in the area of interest (relating to truck roads). The 
+parameter `mode` allows to choose the assumptions for the harvest operations.
+Currently, there are only two options, "standard", and "nordic". In both cases,
+it is assumed that the wood is felled and cut by a harvester, and transported
+to the forest road with a forwarder. With the option "standard", the model uses
+functions estimated after @Bacescu_et_al_2022 and @grigolato_et_al_2022. With 
+the option "nordic", we apply functions provided by @karha_et_al_2023, instead. 
+As the cutting under the option "standard" does only take into account harvest 
+operations with stem diameters at breast height of at least 15 cm, it uses the 
+cutting function by @karha_et_al_2023 in case of smaller lots. The estimate for 
+fuel consumption due to forest road maintenance is estimated after 
+@enache_stampfer_2015 with both options. For details about the other parameters 
+call `?fuel_and_co2_evaluation`. 
+
+The output of the function `fuel_and_co2_evaluation()` is an object of class
+`c4c_co2_result`. It is, in essence, a named list containing the following
+elements:
+
+```{r names_carbon_results}
+names(carbon_out)
+```
+
+Similar as for the base simulation results described in 
+[Section 3.3](#explore_base_sim_out), the first six list elements document the
+settings used for the calculations. The three remaining items, `co2_agg_high`,
+`co2_agg_medium`, `co2_by_phases` are all data frames that contain the actual 
+outcomes, each on a different level of aggregation. We show them below, but
+note, that depending on your machine, some columns will be probably cut off and
+only mentioned under *more variables* underneath the data frame. The variable
+names should be self-explaining, note that for all operations we provide both,
+the fuel consumption and the CO~2~ emissions.
+
+```{r dataframes_carbon_results}
+carbon_out$co2_agg_high
+carbon_out$co2_agg_medium
+carbon_out$co2_by_phases
+```
+
+As a tool for facilitating visualization, we also provide a plot functions for 
+the output objects of the function `fuel_and_co2_evaluation()`. Call
+`?plot.c4c_co2_result` for a full documentation. In the 
+[quickstart section](#quickstart), we have provided an example plot, where the
+CO~2~ emissions were plotted against the wood increment in CO~2~ equivalents.
+Due to the CRAN policies, we cannot show the full set of possible diagrams in
+this vignette; the user is encouraged to check the documentation and try out
+the available options. First, we show for our example the total CO~2~ emissions
+split into the components "cutting", "moving", and "road maintenance:
+
+```{r plot_em_by_type}
+plot(carbon_out, plot_type = "em_by_type")
+```
+
+Second, plotting the ratio of all CO~2~ emissions and the wood increment (in 
+CO~2~ equivalents). Note that, in general, the emissions are between three and 
+two magnitudes smaller compared to the increment.
+
+```{r plot_em_inc_ratio}
+plot(carbon_out, plot_type = "em_inc_ratio")
+```
+
+
+## 4 Further functions
+
+When calling the documentation of any function contained in the package 
+*care4cmodel*, e.g. with `?simulate_single_concept` and scrolling down to the 
+bottom of the page, there is a link called "Index". Following this link leads 
+to a complete list of documented functions the package provides for users. 
+Typically, most of these functions are internally used in the workflow described 
+above. Advanced users, however, might find some useful tools among them.
+
+
+## 5 Acknowledgment
+
+This R package has been developed as a part of the 
+[CARE4C](http://www.care4c.eu/) project that has received funding from the 
+European Union’s HORIZON 2020 research and innovation programme under the Marie 
+Skłodowska-Curie grant agreement # 778322.
+
+
+## 6 References
+
+
+
+

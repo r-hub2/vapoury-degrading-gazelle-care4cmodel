@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started With care4cmodel</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started With care4cmodel</h1>
+
+
+
+<p>This vignette’s purpose is to serve as a guide for getting quickly
+started with the R package <em>care4cmodel</em>. While we give a short
+introduction the concept of the package below, we assume that you
+already know why you want to use the package, and that you are not
+completely unfamiliar with the idea behind it. Here, we will only
+provide scientific details if they are necessary for understanding how
+to work with the package. For a complete and detailed scientific
+presentation see <a href="https://doi.org/10.1016/j.compag.2024.109091"><span class="citation">Biber et al. (2024)</span></a>.</p>
+<div id="concept-of-the-package" class="section level2">
+<h2>1 Concept of the package</h2>
+<p>The R package <em>care4cmodel</em> has been designed in the context
+of quantifying carbon flows related to the growth and management of
+forests. It is, in essence, a dynamic simulation model that is
+surrounded with tools to enable users to quickly set up and simulate
+scenarios and evaluate them. The current version is made for evaluating
+silvicultural concepts with a focus on opposing the CO<sub>2</sub>
+uptake from wood growth to the CO<sub>2</sub> emissions caused by forest
+operations.</p>
+<p>The basic idea of the model is that a forest area managed under a
+given concept can be adequately represented by a set of forest
+development stages, each of which covers a certain share of the total
+area. These area shares change dynamically over time due to continuous
+forest dynamics, but they can also change abruptly due to hazard events.
+Any further simulation results are basically obtained by upscaling
+phase-wise information to these areas. Note, that <em>care4cmodel</em>
+is not a growth and yield simulator in the usual sense, i.e.  the
+required basic growth and yield information relating to the concept of
+interest must be provided by the user (see <a href="#section_concept_definition">Section 3.1</a>). While the current
+implementation is constrained to providing the carbon related
+information as mentioned above, the concept of the model is generic and
+lends itself to a broad variety of applications.</p>
+</div>
+<div id="quickstart" class="section level2">
+<h2>2 Quickstart</h2>
+<p>If you simply want to run and evaluate a simulation without further
+reading, here’s your code:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(care4cmodel) <span class="co"># Attach the package</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># Run a simulation and store its base results in a variable sim_base_out</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># call ?simulate_single_concept for details</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>sim_base_out <span class="ot">&lt;-</span> <span class="fu">simulate_single_concept</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="at">concept_def =</span> pine_thinning_from_above_1, <span class="co"># use pre-defined concept</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="at">init_areas  =</span> <span class="fu">c</span>(<span class="dv">800</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">200</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="at">time_span   =</span> <span class="dv">200</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="at">risk_level  =</span> <span class="dv">3</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co"># Evaluate the base results for carbon related information</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># call ?fuel_and_co2_evaluation for details</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>carbon_out <span class="ot">&lt;-</span> <span class="fu">fuel_and_co2_evaluation</span>(sim_base_out, <span class="at">road_density_m_ha =</span> <span class="dv">35</span>)</span></code></pre></div>
+<p>Both result variables, <code>sim_base_out</code>, and
+<code>carbon_out</code> contain large objects which are, in essence,
+named lists. You can easily explore them manually, but there exist
+convenient functions for visualization:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Plot base results. Without further specifications, this will generate a plot</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># of the areas covered by the stand development phases over time</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Check the documentation with ?plot.c4c_base_result in order to see all </span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># options for plotting, especially growth and yield variables</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">plot</span>(sim_base_out) </span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Plot carbon related results. The selected option for plot_type generates a</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># phase diagram where the total CO2 emissions due to forest operations are</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># plotted over the CO2 sequestered by wood growth.</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># Check the documentation with ?plot.c4c_co2_result in order to see all options</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># for plotting</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">plot</span>(carbon_out, <span class="at">plot_type =</span> <span class="st">&quot;em_vs_inc&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Great, if this got you sufficiently started. If you want more
+explanations, read on.</p>
+</div>
+<div id="using-care4cmodel" class="section level2">
+<h2>3 Using care4cmodel</h2>
+<p>After installing the package on your computer, the easiest (and
+standard) way to access the functionality of the package is to attach it
+with</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(care4cmodel)</span></code></pre></div>
+<div id="section_concept_definition" class="section level3">
+<h3>3.1 Silvicultural concept definition</h3>
+<p>The fundamental requirement for running simulations with
+<em>care4cmodel</em> is an appropriate definition of the silvicultural
+concept of interest. Such definitions are objects of class
+<em>c4c_concept</em>, and the most convienent way to generate one of
+your own is to use the function <code>c4c_concept()</code>. The main
+argument to that function is a data frame with growth and yield
+information, as defined below. Many users will find it convenient to
+assemble this information in a spreadsheet software like MS EXCEL, and
+import it into R as a data frame. With <code>?c4c_concept</code> you can
+call the documentation of <code>c4c_concept()</code>. Using this
+function includes a series of automatic checks in order to ensure that
+the definition is technically correct. The package contains two
+pre-defined concept definitions,
+<code>pine_thinning_from_above_1</code>, and,
+<code>pine_no_thinning_and_clearcut_1</code>. We use the former for
+explaining the main content of such a definition. Simply type the name
+of the concept to display its contents:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>pine_thinning_from_above_1</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; $concept_name</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Scots pine thinning from above&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; $units</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;          time          area        volume          mass stem_diameter </span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;        &quot;year&quot;          &quot;ha&quot;          &quot;m3&quot;           &quot;t&quot;          &quot;cm&quot; </span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; $growth_and_yield</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 14</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt;   phase_no phase_name      duration n_subphases vol_standing vol_remove vol_mort</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;      &lt;int&gt; &lt;chr&gt;              &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; 1        1 initial_stand         15           3          0         0       0    </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 2        2 young_growth          14           3         58.5       0       0.142</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 3        3 immature_timber       29           6        206.        1.64    1.72 </span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; 4        4 mature_timber         49          10        374.        4.38    1.60 </span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; 5        5 final_harvest_…       19           4        446.        8.78    0.584</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; 6        6 final_harvest_…       29           6        378.       16.5     0.471</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; # ℹ 7 more variables: n_standing &lt;dbl&gt;, n_remove &lt;dbl&gt;, dbh_standing &lt;dbl&gt;,</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; #   dbh_remove &lt;dbl&gt;, harvest_interval &lt;dbl&gt;, survival_cum &lt;dbl&gt;,</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; #   vol_increment &lt;dbl&gt;</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;class&quot;)</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt; [1] &quot;c4c_concept&quot;</span></span></code></pre></div>
+<p>Basically, such an object of class <code>c4c_concept</code> (as
+created with the function of the same name) is a list with three
+elements. The first element, <code>concept_name</code> is to be defined
+by the user. The second element, <code>units</code> lists the most
+important units to be used when simulating this concept. This feature is
+not actively used in the current version (and is not required to be
+defined by the user), i.e. all numbers connected to any silvicultural
+concept are understood in these units if not explicitly stated
+otherwise. However in future versions, it is planned to be more flexible
+in that regard. The third element, <code>growth_and_yield</code> is
+actually the most important. It is a data frame that defines the stand
+development phases to be considered, their duration, and a set of
+fundamental growth and yield variables. Typically this information comes
+from observational plots, silvicultural guidelines, forest growth
+simulators, yield tables, and similar sources, or a mixture of
+these.</p>
+<p>The number of stand development phases is totally up to the user; for
+most applications, however, four to seven phases should be sufficient.
+Each line of the data frame completely defines one such phase. The
+phases are taken to be subsequent to each other in the order of the
+column <code>phase_no</code>. The last phase is followed by the first
+phase again, which typically means a final harvest followed by an
+initial stand. The columns of the data frame are defined as follows
+(note that, depending on your system, the contents of some columns, and
+some columns themselves might be cut off in the display above):</p>
+<ul>
+<li><strong>phase_no</strong> Integer numbers that indicate the sequence
+of how the stand development phases follow after each other</li>
+<li><strong>phase_name</strong> User-defined names for the stand
+development phases, must be unique</li>
+<li><strong>duration</strong> The (average) duration of each phase in
+years</li>
+<li><strong>n_subphases</strong> Integer numbers &gt;= 1, indicating the
+number of subphases to each phase to be considered internally. This is
+useful and required for adjusting the “blur” when forest areas move
+through a sequence of phases. I.e. when a stand development phase has a
+duration of <span class="math inline">\(D\)</span> years, and <span class="math inline">\(n\)</span> subphases, a unit area will remain on
+average <span class="math inline">\(D\)</span> years in that phase, but
+with a variance of <span class="math inline">\(\sigma^2=\frac{D^2}{n}\)</span>. In many cases,
+the rule of thumb to have at least three subphases and otherwise <span class="math inline">\(\frac{D}{n}\approx 5\)</span>, will be
+adequate.</li>
+<li><strong>vol_standing</strong> The average standing wood volume
+(m³/ha) of a stand in the phase of interest</li>
+<li><strong>vol_remove</strong> The wood volume (m³/ha/a) that is
+regularly removed (harvested) per year and hectare from a stand in the
+phase of interest. This does not include wood that is harvested due
+(partial) stand destruction by hazard events</li>
+<li><strong>vol_mort</strong> The wood volume (m³/ha/a) that is
+regularly dying per year and hectare in the phase of interest. Like
+vol_remove, this does not include mortality due to stand destruction by
+hazard events</li>
+<li><strong>n_standing</strong> The average number of standing live
+trees per hectare in a stand of the given phase</li>
+<li><strong>n_remove</strong> The number of trees that are removed per
+hectare and year due to regular harvest in the phase of interest</li>
+<li><strong>dbh_standing</strong> The average mean diameter at breast
+height, dbh (cm), of a stand in the phase of interest</li>
+<li><strong>dbh_remove</strong> The average mean dbh (cm) of the trees
+being regularly harvested in a stand of the given phase</li>
+<li><strong>harvest_interval</strong> While vol_remove, and n_remove are
+annual numbers, the harvest interval is the actual time between two
+harvest operations in the phase of interest</li>
+<li><strong>survival_cum</strong> Probability (i.e. number between 0 and
+1) of a stand to survive all occuring hazard events <em>since the
+beginning of the first phase</em> to the end of the phase of interest.
+Therefore, the sequence of these numbers must be decreasing along the
+sequence of phases. The sequence of probabilities given in the concept
+definition is considered the baseline risk. We demonstrate below how
+that baseline can be conveniently adjusted for covering other risk
+scenarios</li>
+<li><strong>vol_increment</strong> The average annual wood volume
+incrment (m³/ha/a) in the phase of interest. Unlike the previous
+variables, vol_increment is not required to be provided by the user when
+generating a concept definition with <code>c4c_concept()</code>. It
+results directly from the phase durations, the standing volumes, the
+removal, and the mortality volume</li>
+</ul>
+</div>
+<div id="section_running_simulation" class="section level3">
+<h3>3.2 Running a simulation</h3>
+<p>The workhorse function for conducting simulation runs with
+<em>care4cmodel</em> is <code>simulate_single_concept()</code>. For
+simulating an example with the concept
+<code>pine_thinning_from_above_1</code> we use it as follows:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>sim_base_out <span class="ot">&lt;-</span> <span class="fu">simulate_single_concept</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>    <span class="at">concept_def =</span> pine_thinning_from_above_1,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="at">init_areas  =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="at">time_span   =</span> <span class="dv">200</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="at">risk_level  =</span> <span class="dv">3</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)</span></code></pre></div>
+<p>The first argument <code>concept_def</code> is the definition of the
+silvicultural concept to be used, it must be a valid object of class
+<code>c4c_concept</code> (<a href="#section_concept_definition">Section
+3.1</a>). The second argument, <code>init_areas</code>, is a vector that
+sets the initial areas covered by the stand development phases as
+defined in the silvicultural concept (in ascending order). In the
+example, <code>init_areas</code> indicates 1000 ha in the first stand
+development phase, and no areas covered by any other phase. This can be
+seen as an afforestation of a 1000 ha forest area. During the
+simulation, the total area (1000 ha in our example) will remain
+constant, while the shares of the phases will be changing. The size of
+the areas and their initial distribution is fully up to the user. Note
+that the initial areas can also be specified on the level of the
+internal sub-phases (<a href="#section_concept_definition">Section
+3.1</a>). Call the function’s documentation with
+<code>?simulate_single_concept</code> for this and other details. The
+argument <code>time_span</code> is the number of years to cover with the
+simulation. 200 years, as defined here, is certainly longer than
+required for typical applications. With the argument
+<code>risk_level</code>, you can adjust the occurence of stochastic
+hazard events relative to the baseline risk settings made in
+<code>survival_cum</code> in the concept definition (<a href="#section_concept_definition">Section 3.1</a>). In the example, the
+setting <code>risk_level = 3</code> means that the actual damage
+probabilities are the same as if the events leading to the baseline risk
+would happen three times in sequence. Consequently,
+<code>risk_level = 1</code> would use exactly the baseline risk; numbers
+smaller than 1 would indicate a lower risk,
+e.g. <code>risk_level = 1/2</code> uses damage probabilities as if only
+half of the baseline risk events happened. Setting
+<code>risk_level = 0</code> will simulate the development without any
+stochastic hazard events. In our example, we store the output in a
+variable, we call <code>sim_base_out</code>. Internally, the simulation
+is based on functionality provided by the R package <a href="https://CRAN.R-project.org/package=deSolve">deSolve</a> <span class="citation">(Karline Soetaert, Thomas Petzoldt, and R. Woodrow
+Setzer 2010)</span>.</p>
+</div>
+<div id="explore_base_sim_out" class="section level3">
+<h3>3.3 Exploring the base simulation output</h3>
+<p>As its output, a simulation with
+<code>simulate_single_concept()</code> generates an object of class
+<code>c4c_base_result</code>. This large object comprises different
+categories of information, and it has an own <code>plot()</code>
+function for convenient result visualization as we will show below. In
+essence, such an object is a named list containing several vectors,
+matrices, and data frames. In the example above (<a href="#section_running_simulation">Section 3.2</a>), we stored such an
+output object in the variable <code>sim_base_out</code>. For the sake of
+clarity, we do not display the entire object here. In order to get an
+overview, let us first display the names of the top level list
+elements:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">names</span>(sim_base_out)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;concept&quot;              &quot;time_span&quot;            &quot;detailed_init&quot;       </span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; [4] &quot;detailed_out&quot;         &quot;init_areas&quot;           &quot;risk_level&quot;          </span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; [7] &quot;parameters&quot;           &quot;sim_areas&quot;            &quot;sim_growth_and_yield&quot;</span></span></code></pre></div>
+<p>The first six list elements, <code>concept</code>,
+<code>time_span</code>, <code>detailed_init</code>,
+<code>detailed_out</code>, <code>init_areas</code>, and
+<code>risk_level</code> document the settings of<br />
+<code>simulate_single_concept()</code> that were used for the
+simulation. You can access them most conveniently by their name,
+e.g.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>sim_base_out<span class="sc">$</span>init_areas</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; [1] 1000    0    0    0    0    0</span></span></code></pre></div>
+<p>The list element <code>parameters</code> contains interal simulation
+parameters derived from the user settings; most important sub-phase wise
+dwell times and detailed risk related information.</p>
+<p>The two remaining list items <code>sim_areas</code>, and
+<code>sim_growth_and_yield</code> contain actual simulation output. Both
+are named lists themselves. <code>sim_areas</code> contains three
+matrices named as follows:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">names</span>(sim_base_out<span class="sc">$</span>sim_areas)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;areas&quot;                &quot;area_inflows_regular&quot; &quot;area_outflows_events&quot;</span></span></code></pre></div>
+<p>All three matrices have the same structure; each line represents a
+point in time, i.e. the end of a simulation year. The first column
+denotes these times in years. The other columns represent the subsequent
+stand development phases from left to right. The matrix
+<code>areas</code> simply contains each phase’s area in ha at the end of
+the respective simulation year. The matrix
+<code>area_inflows_regular</code> represents the areas in ha that flowed
+into a phase from the previous phase during the respective simulation
+year. Analogously, the matrix <code>area_outflows_events</code> contains
+the areas that flowed out of a given phase into the (first subphase of
+the) initial phase due to hazard events. As both of the latter matrices
+represent flows during a year, they contain NA values for the initial
+situation, i.e. time 0.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">head</span>(sim_base_out<span class="sc">$</span>sim_areas<span class="sc">$</span>areas)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt;      time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; [1,]    0     1000.0000      0.00000      0.00000000  0.000000e+00</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; [2,]    1      933.3646     66.61132      0.02405194  1.194750e-11</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; [3,]    2      866.9807    132.68005      0.33920499  1.036965e-08</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; [4,]    3      801.3647    197.11993      1.51537479  5.018447e-07</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; [5,]    4      737.1068    258.66169      4.23155240  7.508342e-06</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; [6,]    5      674.7173    316.13968      9.14299728  5.902744e-05</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;      final_harvest_phase_I final_harvest_phase_II</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; [1,]          0.000000e+00           0.000000e+00</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; [2,]          2.667036e-31           2.355412e-40</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; [3,]          1.860259e-24           1.883231e-31</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; [4,]          5.427057e-21           3.371655e-27</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; [5,]          1.395680e-18           2.739986e-24</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; [6,]          9.978331e-17           4.749860e-22</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="fu">head</span>(sim_base_out<span class="sc">$</span>sim_areas<span class="sc">$</span>area_inflows_regular)</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;      time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; [1,]    0            NA           NA              NA            NA</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; [2,]    1  1.601196e-55     66.63537      0.02405194  1.194750e-11</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; [3,]    2  1.087646e-42     66.39317      0.31516207  1.035772e-08</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; [4,]    3  4.207780e-37     65.66596      1.17651109  4.915013e-07</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; [5,]    4  2.036135e-33     64.34588      2.71796583  7.007984e-06</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; [6,]    5  1.354264e-30     62.43646      4.91347614  5.152796e-05</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt;      final_harvest_phase_I final_harvest_phase_II</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; [1,]                    NA                     NA</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt; [2,]          2.667036e-31           2.355412e-40</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt; [3,]          1.860259e-24           1.883231e-31</span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="co">#&gt; [4,]          5.425208e-21           3.371467e-27</span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="co">#&gt; [5,]          1.390282e-18           2.736636e-24</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="co">#&gt; [6,]          9.839079e-17           4.722529e-22</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="fu">head</span>(sim_base_out<span class="sc">$</span>sim_areas<span class="sc">$</span>area_outflows_events)</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="co">#&gt;      time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt; [1,]    0            NA           NA              NA            NA</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt; [2,]    1    0.17662312  0.000000000    0.000000e+00  0.000000e+00</span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co">#&gt; [3,]    2    0.03011647  0.009276849    9.009760e-06  1.128976e-14</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt; [4,]    3    0.07505072  0.049569165    3.407947e-04  2.626824e-11</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt; [5,]    4    0.08116650  0.086164250    1.781222e-03  1.487123e-09</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt; [6,]    5    0.02970601  0.044992483    1.979728e-03  8.860609e-09</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="co">#&gt;      final_harvest_phase_I final_harvest_phase_II</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="co">#&gt; [1,]                    NA                     NA</span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="co">#&gt; [2,]          0.000000e+00           0.000000e+00</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt; [3,]          4.118826e-34           4.773684e-43</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="co">#&gt; [4,]          7.697644e-27           1.022242e-33</span></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="co">#&gt; [5,]          2.626638e-23           2.140410e-29</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt; [6,]          2.691596e-21           6.934072e-27</span></span></code></pre></div>
+<p>The other remaining list element <code>sim_growth_and_yield</code> is
+a named list of data frames that contain growth and yield information
+which was, in essence, obtained by upscaling the growth and yield
+information provided in the silvicultural concept definition (<a href="#section_concept_definition">Section 3.1</a>). We obtain an
+overview with:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>sim_base_out<span class="sc">$</span>sim_growth_and_yield</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; $gyield_summary</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 8</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt;     time vol_standing vol_rmv_cont vol_rmv_damage vol_rmv_total vol_mort</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;          &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt;  1     0           0        0              NA            0          0   </span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt;  2     1        3903.       0.0393          0            0.0393     9.50</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt;  3     2        7833.       0.555           0.545        1.10      19.4 </span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#&gt;  4     3       11846.       2.48            2.97         5.45      30.6 </span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#&gt;  5     4       16007.       6.92            5.41        12.3       44.0 </span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt;  6     5       20382.      15.0             3.04        18.0       60.6 </span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt;  7     6       25019.      27.5             3.21        30.7       81.2 </span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a><span class="co">#&gt;  8     7       29871.      44.9            79.2        124.       106.  </span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">#&gt;  9     8       35010.      67.7            98.0        166.       136.  </span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a><span class="co">#&gt; 10     9       40498.      96.3            59.3        156.       170.  </span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: vol_inc_ups &lt;dbl&gt;, vol_inc &lt;dbl&gt;</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">#&gt; $gyield_phases</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a><span class="co">#&gt; $gyield_phases$vol_standing</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 7</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a><span class="co">#&gt;     time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">#&gt;  1     0             0           0             0    0            </span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a><span class="co">#&gt;  2     1             0        3898.            4.96 0.00000000446</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a><span class="co">#&gt;  3     2             0        7764.           69.9  0.00000387   </span></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="co">#&gt;  4     3             0       11534.          312.   0.000187     </span></span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a><span class="co">#&gt;  5     4             0       15135.          872.   0.00280      </span></span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a><span class="co">#&gt;  6     5             0       18498.         1884.   0.0220       </span></span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a><span class="co">#&gt;  7     6             0       21558.         3461.   0.115        </span></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a><span class="co">#&gt;  8     7             0       24213.         5658.   0.451        </span></span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a><span class="co">#&gt;  9     8             0       26477.         8531.   1.44         </span></span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a><span class="co">#&gt; 10     9             0       28367.        12127.   3.95         </span></span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: final_harvest_phase_I &lt;dbl&gt;, final_harvest_phase_II &lt;dbl&gt;</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a><span class="co">#&gt; $gyield_phases$vol_rmv_cont</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 7</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a><span class="co">#&gt;     time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a><span class="co">#&gt;  1     0             0            0          0           0       </span></span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a><span class="co">#&gt;  2     1             0            0          0.0393      5.23e-11</span></span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a><span class="co">#&gt;  3     2             0            0          0.555       4.54e- 8</span></span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a><span class="co">#&gt;  4     3             0            0          2.48        2.20e- 6</span></span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a><span class="co">#&gt;  5     4             0            0          6.92        3.29e- 5</span></span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a><span class="co">#&gt;  6     5             0            0         15.0         2.58e- 4</span></span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a><span class="co">#&gt;  7     6             0            0         27.5         1.35e- 3</span></span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a><span class="co">#&gt;  8     7             0            0         44.9         5.29e- 3</span></span>
+<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a><span class="co">#&gt;  9     8             0            0         67.7         1.69e- 2</span></span>
+<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a><span class="co">#&gt; 10     9             0            0         96.3         4.62e- 2</span></span>
+<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: final_harvest_phase_I &lt;dbl&gt;, final_harvest_phase_II &lt;dbl&gt;</span></span>
+<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a><span class="co">#&gt; $gyield_phases$vol_rmv_damage</span></span>
+<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 7</span></span>
+<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a><span class="co">#&gt;     time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a><span class="co">#&gt;  1     0            NA       NA            NA           NA       </span></span>
+<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a><span class="co">#&gt;  2     1             0        0             0            0       </span></span>
+<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a><span class="co">#&gt;  3     2             0        0.543         0.00186      4.22e-12</span></span>
+<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a><span class="co">#&gt;  4     3             0        2.90          0.0702       9.81e- 9</span></span>
+<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a><span class="co">#&gt;  5     4             0        5.04          0.367        5.55e- 7</span></span>
+<span id="cb11-63"><a href="#cb11-63" tabindex="-1"></a><span class="co">#&gt;  6     5             0        2.63          0.408        3.31e- 6</span></span>
+<span id="cb11-64"><a href="#cb11-64" tabindex="-1"></a><span class="co">#&gt;  7     6             0        2.52          0.689        2.04e- 5</span></span>
+<span id="cb11-65"><a href="#cb11-65" tabindex="-1"></a><span class="co">#&gt;  8     7             0       55.3          23.8          1.99e- 3</span></span>
+<span id="cb11-66"><a href="#cb11-66" tabindex="-1"></a><span class="co">#&gt;  9     8             0       60.2          37.8          7.56e- 3</span></span>
+<span id="cb11-67"><a href="#cb11-67" tabindex="-1"></a><span class="co">#&gt; 10     9             0       31.8          27.5          1.17e- 2</span></span>
+<span id="cb11-68"><a href="#cb11-68" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-69"><a href="#cb11-69" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: final_harvest_phase_I &lt;dbl&gt;, final_harvest_phase_II &lt;dbl&gt;</span></span>
+<span id="cb11-70"><a href="#cb11-70" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-71"><a href="#cb11-71" tabindex="-1"></a><span class="co">#&gt; $gyield_phases$vol_rmv_total</span></span>
+<span id="cb11-72"><a href="#cb11-72" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 7</span></span>
+<span id="cb11-73"><a href="#cb11-73" tabindex="-1"></a><span class="co">#&gt;     time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb11-74"><a href="#cb11-74" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb11-75"><a href="#cb11-75" tabindex="-1"></a><span class="co">#&gt;  1     0             0        0              0           0       </span></span>
+<span id="cb11-76"><a href="#cb11-76" tabindex="-1"></a><span class="co">#&gt;  2     1             0        0              0.0393      5.23e-11</span></span>
+<span id="cb11-77"><a href="#cb11-77" tabindex="-1"></a><span class="co">#&gt;  3     2             0        0.543          0.557       4.54e- 8</span></span>
+<span id="cb11-78"><a href="#cb11-78" tabindex="-1"></a><span class="co">#&gt;  4     3             0        2.90           2.55        2.21e- 6</span></span>
+<span id="cb11-79"><a href="#cb11-79" tabindex="-1"></a><span class="co">#&gt;  5     4             0        5.04           7.29        3.34e- 5</span></span>
+<span id="cb11-80"><a href="#cb11-80" tabindex="-1"></a><span class="co">#&gt;  6     5             0        2.63          15.4         2.62e- 4</span></span>
+<span id="cb11-81"><a href="#cb11-81" tabindex="-1"></a><span class="co">#&gt;  7     6             0        2.52          28.2         1.37e- 3</span></span>
+<span id="cb11-82"><a href="#cb11-82" tabindex="-1"></a><span class="co">#&gt;  8     7             0       55.3           68.8         7.28e- 3</span></span>
+<span id="cb11-83"><a href="#cb11-83" tabindex="-1"></a><span class="co">#&gt;  9     8             0       60.2          106.          2.44e- 2</span></span>
+<span id="cb11-84"><a href="#cb11-84" tabindex="-1"></a><span class="co">#&gt; 10     9             0       31.8          124.          5.79e- 2</span></span>
+<span id="cb11-85"><a href="#cb11-85" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-86"><a href="#cb11-86" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: final_harvest_phase_I &lt;dbl&gt;, final_harvest_phase_II &lt;dbl&gt;</span></span>
+<span id="cb11-87"><a href="#cb11-87" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-88"><a href="#cb11-88" tabindex="-1"></a><span class="co">#&gt; $gyield_phases$vol_mort</span></span>
+<span id="cb11-89"><a href="#cb11-89" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 7</span></span>
+<span id="cb11-90"><a href="#cb11-90" tabindex="-1"></a><span class="co">#&gt;     time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb11-91"><a href="#cb11-91" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb11-92"><a href="#cb11-92" tabindex="-1"></a><span class="co">#&gt;  1     0             0         0             0           0       </span></span>
+<span id="cb11-93"><a href="#cb11-93" tabindex="-1"></a><span class="co">#&gt;  2     1             0         9.46          0.0414      1.91e-11</span></span>
+<span id="cb11-94"><a href="#cb11-94" tabindex="-1"></a><span class="co">#&gt;  3     2             0        18.8           0.584       1.65e- 8</span></span>
+<span id="cb11-95"><a href="#cb11-95" tabindex="-1"></a><span class="co">#&gt;  4     3             0        28.0           2.61        8.01e- 7</span></span>
+<span id="cb11-96"><a href="#cb11-96" tabindex="-1"></a><span class="co">#&gt;  5     4             0        36.7           7.28        1.20e- 5</span></span>
+<span id="cb11-97"><a href="#cb11-97" tabindex="-1"></a><span class="co">#&gt;  6     5             0        44.9          15.7         9.42e- 5</span></span>
+<span id="cb11-98"><a href="#cb11-98" tabindex="-1"></a><span class="co">#&gt;  7     6             0        52.3          28.9         4.93e- 4</span></span>
+<span id="cb11-99"><a href="#cb11-99" tabindex="-1"></a><span class="co">#&gt;  8     7             0        58.8          47.3         1.93e- 3</span></span>
+<span id="cb11-100"><a href="#cb11-100" tabindex="-1"></a><span class="co">#&gt;  9     8             0        64.3          71.3         6.15e- 3</span></span>
+<span id="cb11-101"><a href="#cb11-101" tabindex="-1"></a><span class="co">#&gt; 10     9             0        68.8         101.          1.68e- 2</span></span>
+<span id="cb11-102"><a href="#cb11-102" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-103"><a href="#cb11-103" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: final_harvest_phase_I &lt;dbl&gt;, final_harvest_phase_II &lt;dbl&gt;</span></span>
+<span id="cb11-104"><a href="#cb11-104" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-105"><a href="#cb11-105" tabindex="-1"></a><span class="co">#&gt; $gyield_phases$vol_inc_ups</span></span>
+<span id="cb11-106"><a href="#cb11-106" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 7</span></span>
+<span id="cb11-107"><a href="#cb11-107" tabindex="-1"></a><span class="co">#&gt;     time initial_stand young_growth immature_timber mature_timber</span></span>
+<span id="cb11-108"><a href="#cb11-108" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span id="cb11-109"><a href="#cb11-109" tabindex="-1"></a><span class="co">#&gt;  1     0         3901.           0            0          0       </span></span>
+<span id="cb11-110"><a href="#cb11-110" tabindex="-1"></a><span class="co">#&gt;  2     1         3641.         711.           0.220      8.91e-11</span></span>
+<span id="cb11-111"><a href="#cb11-111" tabindex="-1"></a><span class="co">#&gt;  3     2         3382.        1417.           3.10       7.73e- 8</span></span>
+<span id="cb11-112"><a href="#cb11-112" tabindex="-1"></a><span class="co">#&gt;  4     3         3126.        2105.          13.8        3.74e- 6</span></span>
+<span id="cb11-113"><a href="#cb11-113" tabindex="-1"></a><span class="co">#&gt;  5     4         2875.        2762.          38.6        5.60e- 5</span></span>
+<span id="cb11-114"><a href="#cb11-114" tabindex="-1"></a><span class="co">#&gt;  6     5         2632.        3376.          83.5        4.40e- 4</span></span>
+<span id="cb11-115"><a href="#cb11-115" tabindex="-1"></a><span class="co">#&gt;  7     6         2398.        3934.         153.         2.30e- 3</span></span>
+<span id="cb11-116"><a href="#cb11-116" tabindex="-1"></a><span class="co">#&gt;  8     7         2180.        4419.         251.         9.01e- 3</span></span>
+<span id="cb11-117"><a href="#cb11-117" tabindex="-1"></a><span class="co">#&gt;  9     8         1974.        4832.         378.         2.87e- 2</span></span>
+<span id="cb11-118"><a href="#cb11-118" tabindex="-1"></a><span class="co">#&gt; 10     9         1780.        5177.         538.         7.88e- 2</span></span>
+<span id="cb11-119"><a href="#cb11-119" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb11-120"><a href="#cb11-120" tabindex="-1"></a><span class="co">#&gt; # ℹ 2 more variables: final_harvest_phase_I &lt;dbl&gt;, final_harvest_phase_II &lt;dbl&gt;</span></span>
+<span id="cb11-121"><a href="#cb11-121" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-122"><a href="#cb11-122" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb11-123"><a href="#cb11-123" tabindex="-1"></a><span class="co">#&gt; $gyield_harvest_detail</span></span>
+<span id="cb11-124"><a href="#cb11-124" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2,412 × 8</span></span>
+<span id="cb11-125"><a href="#cb11-125" tabindex="-1"></a><span class="co">#&gt; # Groups:   time, phase_no, phase_name, harvest_type, dbh_cm, vol_tree_m3</span></span>
+<span id="cb11-126"><a href="#cb11-126" tabindex="-1"></a><span class="co">#&gt; #   [2,412]</span></span>
+<span id="cb11-127"><a href="#cb11-127" tabindex="-1"></a><span class="co">#&gt;     time harvest_type phase_no phase_name  dbh_cm vol_tree_m3 tree_dist_m volume</span></span>
+<span id="cb11-128"><a href="#cb11-128" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;           &lt;int&gt; &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb11-129"><a href="#cb11-129" tabindex="-1"></a><span class="co">#&gt;  1     0 damage              1 initial_st…    0          0           1.2       0</span></span>
+<span id="cb11-130"><a href="#cb11-130" tabindex="-1"></a><span class="co">#&gt;  2     0 regular             1 initial_st…    0          0           0         0</span></span>
+<span id="cb11-131"><a href="#cb11-131" tabindex="-1"></a><span class="co">#&gt;  3     0 damage              2 young_grow…    5.8        0.01        1.27      0</span></span>
+<span id="cb11-132"><a href="#cb11-132" tabindex="-1"></a><span class="co">#&gt;  4     0 regular             2 young_grow…    0          0           0         0</span></span>
+<span id="cb11-133"><a href="#cb11-133" tabindex="-1"></a><span class="co">#&gt;  5     0 damage              3 immature_t…   10.3        0.05        1.55      0</span></span>
+<span id="cb11-134"><a href="#cb11-134" tabindex="-1"></a><span class="co">#&gt;  6     0 regular             3 immature_t…   12.9        0.09       10.7       0</span></span>
+<span id="cb11-135"><a href="#cb11-135" tabindex="-1"></a><span class="co">#&gt;  7     0 damage              4 mature_tim…   22.9        0.39        3.21      0</span></span>
+<span id="cb11-136"><a href="#cb11-136" tabindex="-1"></a><span class="co">#&gt;  8     0 regular             4 mature_tim…   25.8        0.58       11.5       0</span></span>
+<span id="cb11-137"><a href="#cb11-137" tabindex="-1"></a><span class="co">#&gt;  9     0 damage              5 final_harv…   30.2        0.88        4.43      0</span></span>
+<span id="cb11-138"><a href="#cb11-138" tabindex="-1"></a><span class="co">#&gt; 10     0 regular             5 final_harv…   41.9        1.08       15.7       0</span></span>
+<span id="cb11-139"><a href="#cb11-139" tabindex="-1"></a><span class="co">#&gt; # ℹ 2,402 more rows</span></span></code></pre></div>
+<p>As these data frames are mostly self explaining, let us just point
+out a few details. If not stated otherwise all numbers given there
+represent cubic meters wood. In the first data frame
+<code>gyield_summary</code>, the column <code>vol_rmv_cont</code> stands
+for wood volume that is continually removed (harvested) as planned
+according to the concept definition (<a href="#section_concept_definition">Section 3.1</a>).
+<code>vol_rmv_damage</code> in contrast, is all wood volume of the
+stands that were lost due to hazard events, assuming that this wood is
+harvested in its entirety. Consequently, <code>vol_rmv_total</code> is
+the sum of both, regular and damage-induced harvest. Note that there are
+two variables related to volume increment, <code>vol_inc_ups</code>, and
+<code>vol_inc</code>. The former is upscaled from the concept
+definition, and this the volume increment which should be solely used
+for subsequent calculations. The latter results from a differently
+defined post-hoc calculation and is provided for internal reasons only.
+The data frames that make up the sub-list <code>gyield_phases</code>
+give a more detailed view on the variables provided with
+<code>gyield_summary</code>, i.e. they split them among the stand
+development phases.</p>
+<p>The last data frame, <code>gyield_harvest_detail</code> is of special
+importance, as it contains detailed growth and yield information that is
+required for calculating fuel consumption and CO<sub>2</sub> emissions
+due to harvest operations. That is, the average dbh of a tree to be
+harvested, <code>dbh_cm</code>, the average tree volume,
+<code>vol_tree_m3</code>, the average neighbor distance of the harvest
+trees, <code>tree_dist_m</code>, and the volume to be harvested,
+<code>volume</code>. Note that <code>volume</code> can be 0 even though
+there are non-zero values for the other variables.</p>
+<p>As mentioned in the <a href="#quickstart">quickstart section</a>,
+there is an own plot function for the output objects of the function
+<code>simulate_single_concept()</code>. Its documentation is accessible
+by calling <code>?plot.c4c_base_result</code>. The plot shown in the
+quickstart section shows the default, the development of the areas
+covered by the different stand development phases over time. Due to the
+CRAN policies we can only provide very few other example plots; the
+reader is encouraged to try out all options listed in the documentation.
+First, we visualize the standing volume:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">plot</span>(sim_base_out, <span class="at">variable =</span> <span class="st">&quot;vol_standing&quot;</span>) <span class="co"># standing volume</span></span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Second, we plot the total harvested volume. The sharp peaks result
+from wood that is removed due to hazard events.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">plot</span>(sim_base_out, <span class="at">variable =</span> <span class="st">&quot;vol_rmv_total&quot;</span>) <span class="co"># total harvested volume</span></span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="calculating-carbon-related-results" class="section level3">
+<h3>3.4 Calculating carbon related results</h3>
+<p>In order to obtain the fuel consumption, and subsequently the
+CO<sub>2</sub> emissions caused by forest operations, the package
+provides the function <code>fuel_and_co2_evaluation</code>. The forest
+operations taken into account comprise cutting, moving the timber to the
+forest road (forwarding, skidding), and maintenance of the forest road
+network. A typical call of <code>fuel_and_co2_evaluation</code> in the
+context of our example is shown below. Note that in contrast to the <a href="#quickstart">quickstart section</a>, we explicitly call parameters
+with default values for demonstration.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Calculate information about fuel consumption</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co"># call documentation with ?fuel_and_co2_evaluation for detail information</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>carbon_out <span class="ot">&lt;-</span> <span class="fu">fuel_and_co2_evaluation</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  sim_base_out,             <span class="co"># object obtained from simulate_single_concept</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="at">road_density_m_ha =</span> <span class="dv">35</span>,   <span class="co"># forest road density</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="at">raw_density_kg_m3 =</span> <span class="dv">520</span>,  <span class="co"># default setting, wood density</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  <span class="at">harvest_loss      =</span> <span class="fl">0.1</span>,  <span class="co"># default, share of volume lost at harvest</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="at">bark_share        =</span> <span class="fl">0.12</span>, <span class="co"># default, bark share of volume</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="at">mode  =</span> <span class="st">&quot;standard&quot;</span> <span class="co"># default, choice is between &quot;standard&quot; and &quot;nordic&quot;</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>)</span></code></pre></div>
+<p>The only parameters, the user must provide in any case, are an object
+of class <code>c4c_base_result</code> as obtained from
+<code>simulate_single_concept()</code> and the forest road density
+(m/ha) in the area of interest (relating to truck roads). The parameter
+<code>mode</code> allows to choose the assumptions for the harvest
+operations. Currently, there are only two options, “standard”, and
+“nordic”. In both cases, it is assumed that the wood is felled and cut
+by a harvester, and transported to the forest road with a forwarder.
+With the option “standard”, the model uses functions estimated after
+<span class="citation">Bacescu et al. (2022)</span> and <span class="citation">Grigolato and Cadei (2022)</span>. With the option
+“nordic”, we apply functions provided by <span class="citation">Kärhä et
+al. (2023)</span>, instead. As the cutting under the option “standard”
+does only take into account harvest operations with stem diameters at
+breast height of at least 15 cm, it uses the cutting function by <span class="citation">Kärhä et al. (2023)</span> in case of smaller lots. The
+estimate for fuel consumption due to forest road maintenance is
+estimated after <span class="citation">Enache and Stampfer (2015)</span>
+with both options. For details about the other parameters call
+<code>?fuel_and_co2_evaluation</code>.</p>
+<p>The output of the function <code>fuel_and_co2_evaluation()</code> is
+an object of class <code>c4c_co2_result</code>. It is, in essence, a
+named list containing the following elements:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">names</span>(carbon_out)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;concept&quot;        &quot;time_span&quot;      &quot;detailed_init&quot;  &quot;init_areas&quot;    </span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; [5] &quot;risk_level&quot;     &quot;parameters_co2&quot; &quot;co2_agg_high&quot;   &quot;co2_agg_medium&quot;</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; [9] &quot;co2_by_phases&quot;</span></span></code></pre></div>
+<p>Similar as for the base simulation results described in <a href="#explore_base_sim_out">Section 3.3</a>, the first six list
+elements document the settings used for the calculations. The three
+remaining items, <code>co2_agg_high</code>, <code>co2_agg_medium</code>,
+<code>co2_by_phases</code> are all data frames that contain the actual
+outcomes, each on a different level of aggregation. We show them below,
+but note, that depending on your machine, some columns will be probably
+cut off and only mentioned under <em>more variables</em> underneath the
+data frame. The variable names should be self-explaining, note that for
+all operations we provide both, the fuel consumption and the
+CO<sub>2</sub> emissions.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>carbon_out<span class="sc">$</span>co2_agg_high</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; # A tibble: 201 × 10</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt;     time fuel_cutting_total_l fuel_moving_total_l fuel_road_maint_total_l</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;                &lt;dbl&gt;               &lt;dbl&gt;                   &lt;dbl&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt;  1     0                0                  0                         8750</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt;  2     1                0.117              0.0174                    8750</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt;  3     2                7.79               0.487                     8750</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co">#&gt;  4     3               40.4                2.42                      8750</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt;  5     4               78.6                5.47                      8750</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt;  6     5               75.3                7.98                      8750</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt;  7     6              112.                13.6                       8750</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt;  8     7              825.                55.0                       8750</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt;  9     8              987.                73.5                       8750</span></span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt; 10     9              722.                69.0                       8750</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt; # ℹ 191 more rows</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more variables: co2_cutting_total_kg &lt;dbl&gt;, co2_moving_total_kg &lt;dbl&gt;,</span></span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt; #   co2_road_maint_total_kg &lt;dbl&gt;, co2_equiv_harvest_kg &lt;dbl&gt;,</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt; #   co2_equiv_inc_kg &lt;dbl&gt;, co2_equiv_standing_kg &lt;dbl&gt;</span></span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>carbon_out<span class="sc">$</span>co2_agg_medium</span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="co">#&gt; # A tibble: 402 × 7</span></span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt; # Groups:   time [201]</span></span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt;     time harvest_type fuel_cutting_total_l fuel_moving_total_l</span></span>
+<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;                       &lt;dbl&gt;               &lt;dbl&gt;</span></span>
+<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt;  1     0 damage                      0                  0     </span></span>
+<span id="cb16-25"><a href="#cb16-25" tabindex="-1"></a><span class="co">#&gt;  2     0 regular                     0                  0     </span></span>
+<span id="cb16-26"><a href="#cb16-26" tabindex="-1"></a><span class="co">#&gt;  3     1 damage                      0                  0     </span></span>
+<span id="cb16-27"><a href="#cb16-27" tabindex="-1"></a><span class="co">#&gt;  4     1 regular                     0.117              0.0174</span></span>
+<span id="cb16-28"><a href="#cb16-28" tabindex="-1"></a><span class="co">#&gt;  5     2 damage                      6.14               0.241 </span></span>
+<span id="cb16-29"><a href="#cb16-29" tabindex="-1"></a><span class="co">#&gt;  6     2 regular                     1.65               0.246 </span></span>
+<span id="cb16-30"><a href="#cb16-30" tabindex="-1"></a><span class="co">#&gt;  7     3 damage                     33.0                1.32  </span></span>
+<span id="cb16-31"><a href="#cb16-31" tabindex="-1"></a><span class="co">#&gt;  8     3 regular                     7.37               1.10  </span></span>
+<span id="cb16-32"><a href="#cb16-32" tabindex="-1"></a><span class="co">#&gt;  9     4 damage                     58.0                2.40  </span></span>
+<span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a><span class="co">#&gt; 10     4 regular                    20.6                3.07  </span></span>
+<span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a><span class="co">#&gt; # ℹ 392 more rows</span></span>
+<span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: co2_cutting_total_kg &lt;dbl&gt;, co2_moving_total_kg &lt;dbl&gt;,</span></span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a><span class="co">#&gt; #   co2_equiv_harvest_kg &lt;dbl&gt;</span></span>
+<span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a>carbon_out<span class="sc">$</span>co2_by_phases</span>
+<span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2,412 × 11</span></span>
+<span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a><span class="co">#&gt;     time harvest_type phase_no phase_name            fuel_cutting_l_per_m3</span></span>
+<span id="cb16-40"><a href="#cb16-40" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;           &lt;int&gt; &lt;chr&gt;                                 &lt;dbl&gt;</span></span>
+<span id="cb16-41"><a href="#cb16-41" tabindex="-1"></a><span class="co">#&gt;  1     0 damage              1 initial_stand                         0    </span></span>
+<span id="cb16-42"><a href="#cb16-42" tabindex="-1"></a><span class="co">#&gt;  2     0 regular             1 initial_stand                         0    </span></span>
+<span id="cb16-43"><a href="#cb16-43" tabindex="-1"></a><span class="co">#&gt;  3     0 damage              2 young_growth                         11.3  </span></span>
+<span id="cb16-44"><a href="#cb16-44" tabindex="-1"></a><span class="co">#&gt;  4     0 regular             2 young_growth                          0    </span></span>
+<span id="cb16-45"><a href="#cb16-45" tabindex="-1"></a><span class="co">#&gt;  5     0 damage              3 immature_timber                       2.79 </span></span>
+<span id="cb16-46"><a href="#cb16-46" tabindex="-1"></a><span class="co">#&gt;  6     0 regular             3 immature_timber                       2.97 </span></span>
+<span id="cb16-47"><a href="#cb16-47" tabindex="-1"></a><span class="co">#&gt;  7     0 damage              4 mature_timber                         0.813</span></span>
+<span id="cb16-48"><a href="#cb16-48" tabindex="-1"></a><span class="co">#&gt;  8     0 regular             4 mature_timber                         0.674</span></span>
+<span id="cb16-49"><a href="#cb16-49" tabindex="-1"></a><span class="co">#&gt;  9     0 damage              5 final_harvest_phase_I                 0.571</span></span>
+<span id="cb16-50"><a href="#cb16-50" tabindex="-1"></a><span class="co">#&gt; 10     0 regular             5 final_harvest_phase_I                 0.531</span></span>
+<span id="cb16-51"><a href="#cb16-51" tabindex="-1"></a><span class="co">#&gt; # ℹ 2,402 more rows</span></span>
+<span id="cb16-52"><a href="#cb16-52" tabindex="-1"></a><span class="co">#&gt; # ℹ 6 more variables: fuel_cutting_total_l &lt;dbl&gt;, co2_cutting_total_kg &lt;dbl&gt;,</span></span>
+<span id="cb16-53"><a href="#cb16-53" tabindex="-1"></a><span class="co">#&gt; #   fuel_moving_l_per_m3 &lt;dbl&gt;, fuel_moving_total_l &lt;dbl&gt;,</span></span>
+<span id="cb16-54"><a href="#cb16-54" tabindex="-1"></a><span class="co">#&gt; #   co2_moving_total_kg &lt;dbl&gt;, co2_equiv_harvest_kg &lt;dbl&gt;</span></span></code></pre></div>
+<p>As a tool for facilitating visualization, we also provide a plot
+functions for the output objects of the function
+<code>fuel_and_co2_evaluation()</code>. Call
+<code>?plot.c4c_co2_result</code> for a full documentation. In the <a href="#quickstart">quickstart section</a>, we have provided an example
+plot, where the CO<sub>2</sub> emissions were plotted against the wood
+increment in CO<sub>2</sub> equivalents. Due to the CRAN policies, we
+cannot show the full set of possible diagrams in this vignette; the user
+is encouraged to check the documentation and try out the available
+options. First, we show for our example the total CO<sub>2</sub>
+emissions split into the components “cutting”, “moving”, and “road
+maintenance:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">plot</span>(carbon_out, <span class="at">plot_type =</span> <span class="st">&quot;em_by_type&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+<p>Second, plotting the ratio of all CO<sub>2</sub> emissions and the
+wood increment (in CO<sub>2</sub> equivalents). Note that, in general,
+the emissions are between three and two magnitudes smaller compared to
+the increment.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">plot</span>(carbon_out, <span class="at">plot_type =</span> <span class="st">&quot;em_inc_ratio&quot;</span>)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="further-functions" class="section level2">
+<h2>4 Further functions</h2>
+<p>When calling the documentation of any function contained in the
+package <em>care4cmodel</em>, e.g. with
+<code>?simulate_single_concept</code> and scrolling down to the bottom
+of the page, there is a link called “Index”. Following this link leads
+to a complete list of documented functions the package provides for
+users. Typically, most of these functions are internally used in the
+workflow described above. Advanced users, however, might find some
+useful tools among them.</p>
+</div>
+<div id="acknowledgment" class="section level2">
+<h2>5 Acknowledgment</h2>
+<p>This R package has been developed as a part of the <a href="http://www.care4c.eu/">CARE4C</a> project that has received
+funding from the European Union’s HORIZON 2020 research and innovation
+programme under the Marie Skłodowska-Curie grant agreement # 778322.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">6 References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Bacescu_et_al_2022" class="csl-entry">
+Bacescu, Narcis Mihail, Alberto Cadei, Tadeusz Moskalik, Mateusz
+Wiśniewski, Bruce Talbot, and Stefano Grigolato. 2022. <span>“Efficiency
+Assessment of Fully Mechanized Harvesting System Through the Use of
+Fleet Management System.”</span> <em>Sustainability</em> 14 (24). <a href="https://doi.org/10.3390/su142416751">https://doi.org/10.3390/su142416751</a>.
+</div>
+<div id="ref-biber_et_al_2024" class="csl-entry">
+Biber, Peter, Stefano Grigolato, Julia Schmucker, Hans Pretzsch, and
+Enno Uhl. 2024. <span>“A Generic Simulation Model for Relating Forest
+CO2 Intake and CO2 Emissions by Forest Operations – the r-Package
+Care4cmodel.”</span> <em>Computers and Electronics in Agriculture</em>
+222: 109091. https://doi.org/<a href="https://doi.org/10.1016/j.compag.2024.109091">https://doi.org/10.1016/j.compag.2024.109091</a>.
+</div>
+<div id="ref-enache_stampfer_2015" class="csl-entry">
+Enache, A, and K Stampfer. 2015. <span>“Machine Utilization Rates,
+Energy Requirements and Greenhouse Gas Emissions of Forest Road
+Construction and Maintenance in Romanian Mountain Forests.”</span>
+<em>Journal of Green Engineering</em> 4 (4): 325–50.
+</div>
+<div id="ref-grigolato_et_al_2022" class="csl-entry">
+Grigolato, Stefano, and Alberto Cadei. 2022. <span>“Full-Mechanized CTL
+Production Data in Scots Pine Forest in Poland.”</span> <a href="https://researchdata.cab.unipd.it/659/" class="uri">https://researchdata.cab.unipd.it/659/</a>.
+</div>
+<div id="ref-karha_et_al_2023" class="csl-entry">
+Kärhä, Kalle, Hanna Haavikko, Heikki Kääriäinen, Teijo Palander, Lars
+Eliasson, and Kimmo Roininen. 2023. <span>“Fossil-Fuel Consumption and
+CO2eq Emissions of Cut-to-Length Industrial Roundwood Logging Operations
+in Finland.”</span> <em>European Journal of Forest Research</em>, 1–17.
+</div>
+<div id="ref-Soetart_et_al_2010" class="csl-entry">
+Karline Soetaert, Thomas Petzoldt, and R. Woodrow Setzer. 2010.
+<span>“Solving Differential Equations in <span>R</span>: Package
+de<span>S</span>olve.”</span> <em>Journal of Statistical Software</em>
+33 (9): 1–25. <a href="https://doi.org/10.18637/jss.v033.i09">https://doi.org/10.18637/jss.v033.i09</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
